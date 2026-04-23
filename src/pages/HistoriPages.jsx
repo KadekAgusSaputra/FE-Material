@@ -67,8 +67,12 @@ function HistoriPages(){
                   <span className="text-[#6B7280]">{item.materialName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-[#6B7280]">Harga</span>
-                  <span className="text-[#16A34A] font-medium">Rp {(item.amount || 0).toLocaleString('id-ID')}</span>
+                  <span className="text-[#6B7280]">Harga Beli</span>
+                  <span className="text-[#16A34A] font-medium">Rp {(item.buyPrice || 0).toLocaleString('id-ID')}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#6B7280]">Harga Jual</span>
+                  <span className="text-[#16A34A] font-medium">Rp {(item.sellPrice || 0).toLocaleString('id-ID')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">Jumlah</span>

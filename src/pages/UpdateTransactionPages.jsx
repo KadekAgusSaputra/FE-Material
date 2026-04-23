@@ -197,15 +197,27 @@ function UpdateTransactionPages() {
             <label className="text-[#6B7280] text-[14px]">Jumlah :</label>
             <div className="flex items-center gap-[10px]">
               <button
+                type="button" // Biasakan kasih type biar gak trigger submit form
                 onClick={() => handleQty("down")}
                 className="flex-1 py-[10px] bg-[#DBEafe] text-[#2563EB] rounded-[8px] font-bold"
               >
                 -
               </button>
-              <div className="flex-[2] text-center font-bold text-[18px]">
-                {formData.quantity}
-              </div>
+
+              {/* GANTI DI SINI: Dari <div> ke <input> */}
+              <input
+                type="number"
+                step="0.25"
+                value={formData.quantity}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, quantity: e.target.value }))
+                }
+                onFocus={(e) => e.target.select()} // Tambahan: pas diklik langsung blok angka biar gampang dihapus
+                className="flex-[2] text-center font-bold text-[18px] bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
+
               <button
+                type="button"
                 onClick={() => handleQty("up")}
                 className="flex-1 py-[10px] bg-[#2563EB] text-white rounded-[8px] font-bold"
               >

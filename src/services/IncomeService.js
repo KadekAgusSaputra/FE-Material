@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://be-material-production.up.railway.app/api/material/transaction";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const IncomeServices ={
     getAllData : async () => {

@@ -81,10 +81,15 @@ function IncomePages() {
             <span className="text-[#6B7280]">Material</span>
             <span className="text-[#1F2937]">{latestTrans.materialName || '-'}</span>
           </div>
+
+          <div className="flex justify-between items-center text-[14px]">
+            <span className="text-[#6B7280]">Harga Beli</span>
+            <span className="text-[#DC2626] font-medium">Rp {latestTrans.buyPrice?.toLocaleString('id-ID')}</span>
+          </div>
           
           <div className="flex justify-between items-center text-[14px]">
-            <span className="text-[#6B7280]">Harga</span>
-            <span className="text-[#16A34A] font-medium">Rp {latestTrans.amount?.toLocaleString('id-ID')}</span>
+            <span className="text-[#6B7280]">Harga Jual</span>
+            <span className="text-[#16A34A] font-medium">Rp {latestTrans.sellPrice?.toLocaleString('id-ID')}</span>
           </div>
 
           <div className="flex justify-between items-center text-[14px]">

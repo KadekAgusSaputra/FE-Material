@@ -68,7 +68,7 @@ function HistoriPages(){
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">Harga Beli</span>
-                  <span className="text-[#16A34A] font-medium">Rp {(item.buyPrice || 0).toLocaleString('id-ID')}</span>
+                  <span className="text-[#DC2626] font-medium">Rp {(item.buyPrice || 0).toLocaleString('id-ID')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">Harga Jual</span>

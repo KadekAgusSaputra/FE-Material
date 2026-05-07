@@ -3,9 +3,10 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const IncomeServices ={
-    getAllData : async () => {
-        const response = await axios.get(API_URL)
-        return response.data;
+    // Contoh di IncomeService.js
+    getAllData: async (page = 0, size = 5) => {
+    const response = await axios.get(`${API_URL}?page=${page}&size=${size}`);
+    return response.data; // Response ini sekarang berupa Object, bukan Array langsung
     },
 
     getDataById : async (id) => {

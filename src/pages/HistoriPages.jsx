@@ -1,48 +1,55 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { IncomeServices } from '../services/IncomeService';
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { IncomeServices } from "../services/IncomeService";
 
-function HistoriPages(){
-    const navigate = useNavigate();
+function HistoriPages() {
+  const navigate = useNavigate();
 
-    const [historiData, setHistoriData] = useState([]);
+  const [historiData, setHistoriData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0); // Backend Spring mulai dari 0
+  const [totalPages, setTotalPages] = useState(0);
 
-    const loadHistoriData = useCallback(async () => {
-      console.log("1. Fungsi loadHistoriData dipanggil...");
-        try {
-            const resHistori = await IncomeServices.getAllData();
-            console.log("data histori : ", resHistori)
-            setHistoriData(resHistori);
-        } catch (error) {
-            console.error("Gagal Load Data Histori", error)
-        }
-    },[])
+  const loadHistoriData = useCallback(async () => {
+  try {
+    const res = await IncomeServices.getAllData(currentPage, 5);
+    
+    console.log("FULL RES:", res);        // ← tambah ini
+    console.log("CONTENT:", res.content); // ← dan ini
+    console.log("TOTAL:", res.totalPages);// ← dan ini
+    
+    setHistoriData(res.content);
+    setTotalPages(res.totalPages);
+  } catch (error) {
+    console.error("Gagal Load Data", error);
+  }
+}, [currentPage]);
 
-    useEffect(() => {
-      console.log("useEffect jalan...");
-        loadHistoriData()
-    },[loadHistoriData])
+  useEffect(() => {
+    console.log("useEffect jalan...");
+    loadHistoriData();
+  }, [loadHistoriData]);
 
-    const handleDelete = async (id) => {
-      const isConfirmed = window.confirm("Apkah anda yakin untuk menghapus transaksi ini? ");
+  const handleDelete = async (id) => {
+    const isConfirmed = window.confirm(
+      "Apkah anda yakin untuk menghapus transaksi ini? ",
+    );
 
-      if(isConfirmed){
-        try {
-          await IncomeServices.deleteTransaction(id);
-          alert("Transaksi Berhasil Di Hapus");
+    if (isConfirmed) {
+      try {
+        await IncomeServices.deleteTransaction(id);
+        alert("Transaksi Berhasil Di Hapus");
 
-          setHistoriData(prevData => prevData.filter(item => item.id !== id))
-        } catch (error) {
-          console.error("Gagal hapus data:", error);
+        setHistoriData((prevData) => prevData.filter((item) => item.id !== id));
+      } catch (error) {
+        console.error("Gagal hapus data:", error);
         alert("Gagal menghapus data, periksa koneksi atau database.");
-        }
       }
     }
+  };
 
-    return (
+  return (
     <div className="min-h-screen bg-[#F3F4F6] font-['Roboto'] p-[20px] flex flex-col items-center">
       <div className="w-full max-w-[393px] flex flex-col gap-[20px]">
-        
         {/* Logo Section */}
         <div className="flex justify-center py-4">
           <img src="/logo-material.png" alt="AG Material" className="h-10" />
@@ -50,12 +57,13 @@ function HistoriPages(){
 
         {/* Container Card Putih */}
         <div className="bg-white rounded-[20px] shadow-sm p-[24px] flex flex-col gap-[20px]">
-          <h2 className="text-[18px] font-bold text-[#1F2937] text-center mb-2">Histori Transaksi</h2>
+          <h2 className="text-[18px] font-bold text-[#1F2937] text-center mb-2">
+            Histori Transaksi
+          </h2>
 
           {/* MULAI LOOPING DATA */}
-          {historiData.map((item, index) => (
+          {historiData?.map((item, index) => (
             <div key={item.id} className="flex flex-col gap-[12px]">
-              
               {/* Data Rows */}
               <div className="flex flex-col gap-[8px] text-[15px]">
                 <div className="flex justify-between">
@@ -68,35 +76,49 @@ function HistoriPages(){
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">Harga Beli</span>
-                  <span className="text-[#DC2626] font-medium">Rp {(item.buyPrice || 0).toLocaleString('id-ID')}</span>
+                  <span className="text-[#DC2626] font-medium">
+                    Rp {(item.buyPrice || 0).toLocaleString("id-ID")}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">Harga Jual</span>
-                  <span className="text-[#16A34A] font-medium">Rp {(item.sellPrice || 0).toLocaleString('id-ID')}</span>
+                  <span className="text-[#16A34A] font-medium">
+                    Rp {(item.sellPrice || 0).toLocaleString("id-ID")}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">Jumlah</span>
-                  <span className="text-[#6B7280] font-medium">{item.quantity.toLocaleString('id-ID')}</span>
+                  <span className="text-[#6B7280] font-medium">
+                    {item.quantity.toLocaleString("id-ID")}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">Pengeluaran</span>
-                  <span className="text-[#DC2626] font-medium">Rp {(item.expensesAmount || 0).toLocaleString('id-ID')}</span>
+                  <span className="text-[#DC2626] font-medium">
+                    Rp {(item.expensesAmount || 0).toLocaleString("id-ID")}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#6B7280]">Tanggal Transaksi</span>
+                  <span className="text-[#2563EB]">{item.transactionDate}</span>
                 </div>
                 <div className="flex justify-between font-bold">
                   <span className="text-[#6B7280]">Total Harga</span>
-                  <span className="text-[#16A34A]">Rp {(item.totalPrice || 0).toLocaleString('id-ID')}</span>
+                  <span className="text-[#16A34A]">
+                    Rp {(item.totalPrice || 0).toLocaleString("id-ID")}
+                  </span>
                 </div>
               </div>
 
               {/* Tombol Aksi - Menggunakan ID Tersembunyi */}
               <div className="flex flex-col gap-[8px] mt-2">
-                <button 
+                <button
                   onClick={() => navigate(`/update/${item.id}`)}
                   className="w-full py-[8px] bg-[#2563EB1A] text-[#2563EB] rounded-[4px] font-bold text-[14px]"
                 >
                   Update
                 </button>
-                <button 
+                <button
                   onClick={() => handleDelete(item.id)}
                   className="w-full py-[8px] bg-[#DC26261A] text-[#DC2626] rounded-[4px] font-bold text-[14px]"
                 >
@@ -110,21 +132,40 @@ function HistoriPages(){
               )}
             </div>
           ))}
+          {/* Taruh ini di bawah looping data kamu */}
+          <div className="flex justify-between items-center mt-6">
+            <button
+              disabled={currentPage === 0}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+              className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+            >
+              Prev
+            </button>
+
+            <span className="text-sm font-bold">
+              Halaman {currentPage + 1} dari {totalPages}
+            </span>
+
+            <button
+              disabled={currentPage + 1 >= totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+            >
+              Next
+            </button>
+          </div>
         </div>
 
         {/* Tombol Kembali */}
-        <button 
-          onClick={() => navigate('/')}
+        <button
+          onClick={() => navigate("/")}
           className="w-full py-[12px] bg-[#2563EB] text-white rounded-[8px] font-bold text-[16px] shadow-lg active:scale-[0.98] transition"
         >
           Kembali
         </button>
-
       </div>
     </div>
   );
-
-  
 }
 
 export default HistoriPages;
